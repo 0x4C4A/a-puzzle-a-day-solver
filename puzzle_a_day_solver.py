@@ -332,6 +332,7 @@ solutions = 0 # Used as a global
 error = False
 months = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec']
 month = 'jan'
+date = 1
 mode = 'findOne' # Used as a global
 
 # Parse arguments
