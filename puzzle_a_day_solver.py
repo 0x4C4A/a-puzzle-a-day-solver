@@ -5,6 +5,8 @@ import time
 # If you want to prohibit flipping shapes over, set this to False.
 # This was added simply because I was curious whether it was possible to solve all dates without flipping. Turned out it is not.
 ALLOW_FLIPPING_SHAPES = True
+# Enables colour output for the terminal. Easier to parse the arrays that way.
+ENABLE_COLOR = True
 
 # A single piece that goes into the puzzle frame
 class Shape:
@@ -131,7 +133,10 @@ class Field:
                 string = f'{string} {cell:>5}'
                 value = self._placedShapesAggregate[idy][idx]
                 if type(value) == dict:
-                    stringOccupied = f'{stringOccupied} \x1b[0;30;{value["color"]}m[-{value["name"][0]}-]\x1b[0m'
+                    if ENABLE_COLOR:
+                        stringOccupied = f'{stringOccupied} \x1b[0;30;{value["color"]}m[-{value["name"][0]}-]\x1b[0m'
+                    else:
+                        stringOccupied = f'{stringOccupied} [-{value["name"][0]}-]'
                 elif value:
                     stringOccupied = f'{stringOccupied} [-{value}-]'
                 else:
