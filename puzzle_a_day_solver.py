@@ -1,10 +1,13 @@
 import numpy as np
-import copy
+import copy # For easy deepcopying of 2D shape arrays
 import sys
 import time
 
+# If you want to prohibit flipping shapes over, set this to False.
+# This was added simply because I was curious whether it was possible to solve all dates without flipping. Turned out it is not.
 ALLOW_FLIPPING_SHAPES = True
 
+# A single piece that goes into the puzzle frame
 class Shape:
     def __init__(self, name, color, shapedata):
         self._name = name
@@ -82,7 +85,7 @@ class Shape:
     def getUniqueShapes(self):
         return self._uniqueShapes
 
-
+# The frame/field the pieces are set into.
 class Field:
     def __init__(self, fieldArr):
         self._fieldArr = copy.deepcopy(fieldArr)
@@ -237,6 +240,7 @@ class Field:
 
         return True
 
+# Original a-puzzle-a-day shapes
 shapes = [
     Shape('7', 41, [
         [1, 1],
@@ -278,6 +282,7 @@ shapes = [
     ])
 ]
 
+# Original a-puzzle-a-day frame
 field = Field([
     ['jan', 'feb', 'mar', 'apr', 'may', 'jun'],
     ['jul', 'aug', 'sep', 'oct', 'nov', 'dec'],
@@ -288,11 +293,11 @@ field = Field([
     [29, 30, 31]
 ])
 
-
 def print_shapes():
     for shape in shapes:
         print(f'### {shape.name()} ###')
         shape.printUniqueShapes()
+
 
 def recursiveAlgo(shape_index = 0, ):
     global solutions
@@ -323,13 +328,13 @@ def recursiveAlgo(shape_index = 0, ):
 
     return False
 
-solutions = 0
+solutions = 0 # Used as a global
 error = False
 months = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec']
 month = 'jan'
-mode = 'findOne'
+mode = 'findOne' # Used as a global
 
-
+# Parse arguments
 if len(sys.argv) >= 2:
     month = sys.argv[1]
 
@@ -343,7 +348,7 @@ if len(sys.argv) >= 3:
 if len(sys.argv) >= 4:
     mode = sys.argv[3]
 
-
+# Check argument validity
 if date < 1 or date > 31:
     print(f"Date must be between 1 and 31!")
     error = True
@@ -357,8 +362,10 @@ if mode not in ['findOne', 'findAll']:
 if error:
     sys.exit(1)
 
+# Block off the provided date in the frame
 field.blockDate(month, date)
 
+# Run the main task
 print(f"Trying to solve puzzle-a-day for {month} {date}!")
 start = time.time()
 if recursiveAlgo() or solutions > 0:
