@@ -1,4 +1,3 @@
-import numpy as np
 import copy # For easy deepcopying of 2D shape arrays
 import sys
 import time
@@ -12,7 +11,7 @@ class Shape:
     def __init__(self, name, color, shapedata):
         self._name = name
         self._color = color
-        self._shapedata = np.array(shapedata)
+        self._shapedata = copy.deepcopy(shapedata)
         self.findUniqueConfigs()
 
     def name(self):
@@ -39,12 +38,27 @@ class Shape:
             self.print(rotation=config['rotation'], flip=config['flip'])
 
     def getShapedata(self, rotation=0, flip=False):
-        temp = self._shapedata
+        temp = copy.deepcopy(self._shapedata)
 
         if flip:
-            temp = np.fliplr(temp)
+            temp = [row[::-1] for row in temp]
 
-        return np.rot90(temp, rotation)
+        while rotation:
+            temp = list(zip(*temp[::-1]))
+            rotation -= 1
+
+        return temp
+
+    def isShapeDataEqual(self, shapeA, shapeB):
+        if len(shapeA) != len(shapeB) or len(shapeA[0]) != len(shapeB[0]):
+            return False
+
+        for y in range(0, len(shapeA)):
+            for x in range(0, len(shapeA[0])):
+                if shapeA[y][x] != shapeB[y][x]:
+                    return False
+
+        return True
 
     def findUniqueConfigs(self):
         configs = []
@@ -73,7 +87,7 @@ class Shape:
                 shape2 = self.getShapedata(
                     rotation=config2['rotation'], flip=config2['flip'])
 
-                if np.array_equal(shapes[id], shape2):
+                if self.isShapeDataEqual(shapes[id], shape2):
                     config2['unique'] = False
 
         self._uniqueShapes = [
